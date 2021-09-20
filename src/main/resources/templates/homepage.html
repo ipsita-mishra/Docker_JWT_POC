@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Banking Portal</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <style type="text/css">
+         
+      .success {
+        background-color: #e6fff9;
+      }
+
+      .failure {
+        background-color: #ffe6e6;
+      }
+
+
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <h2>Banking Service</h2>
+         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+               <a class="nav-link active" id="pills-login-tab" data-toggle="pill" href="#pills-login" role="tab" aria-controls="pills-login" aria-selected="true">Login</a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" id="pills-register-tab" data-toggle="pill" href="#pills-register" role="tab" aria-controls="pills-register" aria-selected="true">Register</a>
+            </li>
+         </ul>
+         <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="pills-login-tab">
+               <form id="loginform">
+                  <div class="form-group">
+                     <label for="usernameLogin">User Name:</label>
+                     <input type="text" class="form-control" id="usernameLogin" placeholder="Enter username" name="usernameLogin">
+                  </div>
+                  <div class="form-group">
+                     <label for="pwd">Password:</label>
+                     <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+                  </div>
+                  <button  id="login" formmethod="post" class="btn btn-primary" type="button">Submit</button>
+               </form>
+               <div class="container failure" id="loginFailure">
+                  <h3>Login Unsuccessful</h3>
+                  <h5>Please try again later</h5>
+                  <button name="refreshreg" class="btn btn-primary" type="button">Back</button>
+               </div>
+            </div>
+            <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="pills-register-tab">
+               <form id = "regform">
+                  <div class="form-group">
+                     <label for="usernameR">User Name:</label>
+                     <input type="text" class="form-control" id="usernameR" placeholder="Enter username" name="usernameR">
+                  </div>
+                  <div class="form-group">
+                     <label for="usernameR">Password:</label>
+                     <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+                  </div>
+                  <div class="form-group">
+                     <label for="email">Email:</label>
+                     <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+                  </div>
+                  <div class="form-group">
+                     <label for="ssn">SSN:</label>
+                     <input type="number" class="form-control" id="ssn" placeholder="Enter SSN" name="ssn">
+                  </div>
+                  <div class="form-group">
+                     <label for="usertype">User Type:</label>
+
+                     <div class="form-check">
+                       <input class="form-check-input" type="radio" name="usertype" value="Private" checked>
+                       <label class="form-check-label">Private</label>
+                     </div>
+                     <div class="form-check">
+                       <input class="form-check-input" type="radio" name="usertype" value="Corporate">
+                       <label class="form-check-label">Corporate</label>
+                     </div>
+                     <div class="form-check">
+                       <input class="form-check-input" type="radio" name="usertype" value="Organization">
+                       <label class="form-check-label">Organization</label>
+                     </div>
+
+                  </div>
+                  <button id="register" formmethod="post" class="btn btn-primary" type="button">Submit</button>
+               </form>
+               <div class="container failure" id="failure">
+                  <h3>Registration Unsuccessful</h3>
+                  <h5>Please try again later</h5>
+                  <button name="refreshreg" class="btn btn-primary" type="button">Back</button>
+               </div>
+               <div class="container success " id="success">
+                  <h3>Registration Successful</h3>
+                  <h5>Below are your details :</h5>
+                  <div class="form-group">
+                     <label for="guserid">User ID:</label>
+                     <input type="text" class="form-control" id="guserid" value="" name="guserid" disabled>
+                  </div>
+                  <div class="form-group">
+                     <label for="gname">Name:</label>
+                     <input type="text" class="form-control" id="gname" value="" name="gname" disabled>
+                  </div>
+                  <button name="refreshreg" class="btn btn-primary" type="button">Back</button>
+
+
+               </div>
+            </div>
+         </div>
+      </div>
+      <script type="text/javascript">
+         $( document ).ready(function() {
+            $('#loginFailure').hide();
+            $('#success').hide();
+            $('#failure').hide();
+
+
+            $("[name='refreshreg']").click(function() {
+                location.reload();
+            });
+
+             $(function(){
+                $('#register').click(function() {
+
+                  const user = {
+                      userName: $(usernameR).val(),
+                      password: $(password).val(),
+                      ssn: $(ssn).val(),
+                      userType: $('input[name="usertype"]:checked').val(),
+                      email: $(email).val()
+                  };
+                  console.log(user);
+                  const headers = new Headers({
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                  });
+
+                  const request = new Request('http://localhost:8099/register', {
+                      method: 'POST',
+                      headers: headers,
+                      redirect: 'follow',
+                      mode: 'cors',
+                      body: JSON.stringify(user)
+                  });
+
+
+                  fetch(request)
+                      .then(res => res.json())
+                      .then(json => displayWorker(json))
+                      .catch(err => console.error('Error:', err));
+
+                  displayWorker= function(data){
+                     if(data.message == "User Created Successfully"){
+                        $("#guserid").val(data.userId);
+                        $("#gname").val(data.name);
+                        $('#regform').css('display', 'none');
+                        $('#success').css('display', 'block');
+                      }else{
+                        $('#regform').css('display', 'none');
+                        $('#failure').css('display', 'block');
+                      }
+
+                  }
+
+                });
+             })
+
+
+             $(function(){
+                $('#login').click(function() {
+
+                  const loginUser = {
+                      username: $(usernameLogin).val(),
+                      password: $(pwd).val(),
+                  };
+                  console.log(loginUser);
+                  const headers = new Headers({
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                  });
+
+                  const request = new Request('http://localhost:8099/authenticate', {
+                      method: 'POST',
+                      headers: headers,
+                      redirect: 'follow',
+                      mode: 'cors',
+                      body: JSON.stringify(loginUser)
+                  });
+
+
+                  fetch(request)
+                      .then(res => res.json())
+                      .then(json => loginDisplayWorker(json))
+                      .catch(err => console.error('Error:', err));
+
+                  loginDisplayWorker= function(data){
+                     if(data.jwttoken){
+                        console.log(data.jwttoken)
+                        sessionStorage.setItem("username", $(usernameLogin).val());
+                        sessionStorage.setItem("token", data.jwttoken);
+                        window.location.replace("http://localhost:8099/data");
+
+                      }else{
+                        $('#loginform').css('display', 'none');
+                        $('#loginFailure').css('display', 'block');
+
+                      }
+
+                  }
+
+                });
+             })
+
+          })
+</script>
+   </body>
+</html>
